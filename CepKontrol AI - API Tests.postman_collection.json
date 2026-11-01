@@ -1,0 +1,181 @@
+{
+  "info": {
+    "_postman_id": "41b811ac-5855-4a3a-8a07-beec12cf911f",
+    "name": "CepKontrol AI - API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "56687571",
+    "_collection_link": "https://go.postman.co/collection/56687571-41b811ac-5855-4a3a-8a07-beec12cf911f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "TC01 - API Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code 200 olmali\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"API saglik durumu dogru olmali\", function () {\r\n    const body = pm.response.json();\r\n    pm.expect(body.durum).to.eql(\"sağlıklı\");\r\n});\r\n\r\npm.test(\"API surumu 1.0.0 olmali\", function () {\r\n    const body = pm.response.json();\r\n    pm.expect(body.surum).to.eql(\"1.0.0\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "health"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC02 - Create Income Transaction",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code 201 olmali\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\npm.test(\"Gelir aciklamasi dogru olmali\", function () {\r\n    const body = pm.response.json();\r\n    pm.expect(body.description).to.eql(\"QA Test Gelir Kaydi\");\r\n});\r\n\r\npm.test(\"Gelir tutari 1500 olmali\", function () {\r\n    const body = pm.response.json();\r\n    pm.expect(body.amount).to.eql(1500);\r\n});\r\n\r\npm.test(\"Islem turu income olmali\", function () {\r\n    const body = pm.response.json();\r\n    pm.expect(body.type).to.eql(\"income\");\r\n});\r\n\r\npm.test(\"Kategori ID 2 olmali\", function () {\r\n    const body = pm.response.json();\r\n    pm.expect(body.category_id).to.eql(2);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"description\": \"QA Test Gelir Kaydi\",\r\n  \"amount\": 1500,\r\n  \"type\": \"income\",\r\n  \"category_id\": 2,\r\n  \"transaction_date\": \"2026-10-30\",\r\n  \"notes\": \"Postman otomasyon testi\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/transactions",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "transactions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC04 - Negative Amount Validation",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Negative amount should be rejected\", function () {\r\n    pm.response.to.have.status(422);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"description\": \"QA Negatif Tutar Testi\",\r\n  \"amount\": -100,\r\n  \"type\": \"expense\",\r\n  \"category_id\": 7,\r\n  \"transaction_date\": \"2026-10-30\",\r\n  \"notes\": \"Negatif tutar doğrulama testi\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/transactions",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "transactions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "TC05 – Invalid Category ID Test.",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Invalid category should be rejected\", function () {\r\n    pm.expect(pm.response.code).to.be.oneOf([400, 404, 422]);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"description\": \"Gecersiz Kategori Testi\",\r\n  \"amount\": 250,\r\n  \"type\": \"expense\",\r\n  \"category_id\": 99999,\r\n  \"transaction_date\": \"2026-10-31\",\r\n  \"notes\": \"Gecersiz kategori dogrulama testi\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/transactions",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "transactions"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    }
+  ]
+}
