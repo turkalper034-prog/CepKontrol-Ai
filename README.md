@@ -342,14 +342,16 @@ Kökteki `Jenkinsfile`, Windows etiketli bir Jenkins ajanında checkout, araç/b
 Jenkins Windows ajanı için gerekli olanlar:
 
 - Git ve Jenkins Pipeline, Git, JUnit eklentileri
-- Python 3.12 ve `py -3.12` launcher
+- Python 3.12
 - Node.js 20.19+ veya 22.12+ ve npm
 - Newman 6.x PATH üzerinde
 - Google Chrome şu konumda: `C:\Program Files\Google\Chrome\Application\chrome.exe`
 - Maven 3.9+ ve Maven'in kullandığı JDK 21
 - Selenium Manager'ın ChromeDriver edinmesi için ağ erişimi (veya ajan üzerinde uyumlu ChromeDriver yapılandırması)
 
-Jenkins'te yeni bir **Pipeline** işi oluşturun; **Pipeline script from SCM** seçin, Git SCM ve GitHub depo adresini tanımlayın, branch'i seçin ve Script Path olarak `Jenkinsfile` girin. Sonra Build Now çalıştırın. Bu çalışma alanında Git deposu/Jenkins sunucusu yapılandırılmamıştır; GitHub'a push veya Jenkins'te bir build çalıştırıldığı iddia edilmez.
+Jenkins'te yeni bir **Pipeline** işi oluşturun; **Pipeline script from SCM** seçin, Git SCM ve GitHub depo adresini tanımlayın, `main` branch'ini seçin ve Script Path olarak `Jenkinsfile` girin. Sonra Build Now çalıştırın. Kaynak GitHub'a yüklenmiştir; ancak Jenkins kurulumu/build'i bu ortamda doğrulanmamıştır.
+
+Jenkins Windows servisi, etkileşimli kullanıcı hesabının PATH ayarlarını görmeyebilir. Python kurulu olduğu hâlde bulunamazsa **Manage Jenkins > System > Global properties > Environment variables** altında `PYTHON312` değişkenini Jenkins ajanında erişilebilir `python.exe` dosyasının tam yolu olarak tanımlayın. Pipeline ayrıca `C:\Users\turka\AppData\Local\Programs\Python\Python312\python.exe`, PATH'teki `python` ve `py -3.12` yollarını dener; seçilen yorumlayıcının Python 3.12 olduğunu doğrular.
 
 ### Cucumber / Java API sağlık senaryosu
 
