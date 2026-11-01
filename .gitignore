@@ -27,7 +27,7 @@ dist-ssr/
 # Build, test, and runtime output
 target/
 test-results/
-reports/
+/reports/
 newman/*.html
 newman/*.xml
 *.log
