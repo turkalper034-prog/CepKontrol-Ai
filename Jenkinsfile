@@ -73,7 +73,8 @@ pipeline {
                 bat '''
                     @echo off
                     if not exist test-results mkdir test-results
-                    backend\\venv\\Scripts\\python.exe -m pytest backend\\tests -q --junitxml=test-results\\backend.xml
+                    cd /d "%WORKSPACE%\\backend" || exit /b 1
+                    venv\\Scripts\\python.exe -m pytest tests -q --junitxml=..\\test-results\\backend.xml
                 '''
             }
         }
@@ -92,7 +93,8 @@ pipeline {
                 bat '''
                     @echo off
                     if not exist test-results mkdir test-results
-                    backend\\venv\\Scripts\\python.exe -m pytest frontend\\tests\\selenium -q --junitxml=test-results\\selenium.xml
+                    cd /d "%WORKSPACE%\\backend" || exit /b 1
+                    venv\\Scripts\\python.exe -m pytest ..\\frontend\\tests\\selenium -q --junitxml=..\\test-results\\selenium.xml
                 '''
             }
         }
