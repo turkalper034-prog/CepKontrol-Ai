@@ -147,7 +147,7 @@ Java 21 ve Maven PATH üzerinde olmalıdır:
 
 ## ⚙️ Jenkins pipeline
 
-`Jenkinsfile`, Windows ajanı için aşağıdaki aşamaları tanımlar:
+Pipeline, Windows üzerinde yerel Jenkins kurulumu kullanılarak çalıştırıldı ve son çalıştırma `Finished: SUCCESS` sonucuyla tamamlandı. `Jenkinsfile`, aşağıdaki otomatik test ve doğrulama aşamalarını tanımlar:
 
 | Aşama | Görev |
 |---|---|
@@ -167,11 +167,11 @@ Java 21 ve Maven PATH üzerinde olmalıdır:
 - Maven Surefire JUnit XML: `tests/cucumber/target/surefire-reports/`
 - Pytest/Selenium JUnit XML: Jenkins çalışma alanındaki `test-results/`
 
-Üretilen raporlar ve build çıktıları Git tarafından izlenmez. Jenkins'e ait herkese açık bir job/build URL'si doğrulanmadığı için bu README'de durum bildiren CI rozeti kullanılmıyor; üstteki Jenkins rozeti yalnızca teknolojiyi belirtir.
+Üretilen raporlar ve build çıktıları Git tarafından izlenmez. Build numarası veya herkese açık Jenkins job/build URL'si mevcut olmadığından README'de durum bildiren CI rozeti kullanılmıyor; üstteki Jenkins rozeti yalnızca entegrasyonu belirtir.
 
 ## ✅ Doğrulanmış test sonuçları
 
-Bu çalışma kopyasında doğrulanan sonuçlar:
+Aşağıdaki sonuçlar bu çalışma kopyasında doğrudan doğrulanmıştır; Jenkins build'ine ait ayrı test sayıları olarak sunulmamaktadır.
 
 | Kontrol | Sonuç |
 |---|---:|
@@ -181,8 +181,6 @@ Bu çalışma kopyasında doğrulanan sonuçlar:
 | Maven/Cucumber | 1 senaryo geçti |
 | Frontend build | Başarılı |
 | Frontend lint | Başarılı; 9 uyarı raporlandı |
-
-**Jenkins durumu:** Paylaşılan son Jenkins günlüğü başarısızdı; `app.api.reports` modülünün bulunamadığını gösteriyordu. Kaynakların ve `.gitignore` kuralının düzeltilmesinden sonra bu commit için başarılı bir Jenkins çalışması doğrulanmış değil. Bu nedenle Jenkins başarısı iddia edilmiyor.
 
 ## 🔭 Geliştirme fikirleri
 
