@@ -1,6 +1,10 @@
 pipeline {
     agent { label 'windows' }
 
+    environment {
+        MAVEN_HOME = 'C:\\Program Files\\apache-maven-3.9.16'
+    }
+
     options {
         timestamps()
         timeout(time: 45, unit: 'MINUTES')
@@ -19,6 +23,7 @@ pipeline {
                 bat '''
                     @echo off
                     if not exist test-results mkdir test-results
+                    set "PATH=%MAVEN_HOME%\\bin;%PATH%"
                     set "PYTHON_EXE="
                     if defined PYTHON312 if exist "%PYTHON312%" set "PYTHON_EXE=%PYTHON312%"
                     if not defined PYTHON_EXE if exist "C:\\Users\\turka\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" set "PYTHON_EXE=C:\\Users\\turka\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
@@ -39,8 +44,8 @@ pipeline {
                     "%PYTHON_EXE%" -c "import sys; raise SystemExit(0 if sys.version_info[:2] == (3, 12) else 1)" || (echo ERROR: Jenkins selected a Python version other than 3.12: %PYTHON_EXE%& exit /b 1)
                     where node >nul 2>nul || (echo ERROR: Node.js not found on PATH.& exit /b 1)
                     where npm >nul 2>nul || (echo ERROR: npm not found on PATH.& exit /b 1)
-                    where mvn >nul 2>nul || (echo ERROR: Maven not found on PATH.& exit /b 1)
-                    mvn -version | findstr /C:"Java version: 21." >nul || (echo ERROR: Maven must run with JDK 21.& exit /b 1)
+                    if not exist "%MAVEN_HOME%\\bin\\mvn.cmd" (echo ERROR: Maven not found at %MAVEN_HOME%\\bin\\mvn.cmd.& exit /b 1)
+                    call "%MAVEN_HOME%\\bin\\mvn.cmd" -version | findstr /C:"Java version: 21." >nul || (echo ERROR: Maven must run with JDK 21.& exit /b 1)
                     where newman >nul 2>nul || (echo ERROR: Newman is not installed on the Jenkins agent. Install Newman 6.x and add it to PATH.& exit /b 1)
                     if not exist "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" (
                         echo ERROR: Google Chrome is required at the Selenium fixture's configured path.
@@ -96,6 +101,7 @@ pipeline {
             steps {
                 bat '''
                     @echo off
+                    set "PATH=%MAVEN_HOME%\\bin;%PATH%"
                     if not exist test-results mkdir test-results
                     powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\\Run-Cucumber.ps1
                 '''

@@ -346,7 +346,7 @@ Jenkins Windows ajanı için gerekli olanlar:
 - Node.js 20.19+ veya 22.12+ ve npm
 - Newman 6.x PATH üzerinde
 - Google Chrome şu konumda: `C:\Program Files\Google\Chrome\Application\chrome.exe`
-- Maven 3.9+ ve Maven'in kullandığı JDK 21
+- Maven 3.9.16 `C:\Program Files\apache-maven-3.9.16` konumunda ve Maven'in kullandığı JDK 21
 - Selenium Manager'ın ChromeDriver edinmesi için ağ erişimi (veya ajan üzerinde uyumlu ChromeDriver yapılandırması)
 
 Jenkins'te yeni bir **Pipeline** işi oluşturun; **Pipeline script from SCM** seçin, Git SCM ve GitHub depo adresini tanımlayın, `main` branch'ini seçin ve Script Path olarak `Jenkinsfile` girin. Sonra Build Now çalıştırın. Kaynak GitHub'a yüklenmiştir; ancak Jenkins kurulumu/build'i bu ortamda doğrulanmamıştır.
