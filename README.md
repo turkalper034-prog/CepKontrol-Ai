@@ -40,6 +40,9 @@ React tabanlı arayüzü, FastAPI servisi ve SQLite veritabanıyla geliştirilen
 | API ve veri | Python 3.12, FastAPI, Pydantic, SQLite |
 | Test | Pytest, HTTPX, Selenium, Postman/Newman, Java 21, Maven, Cucumber |
 | CI | Windows Jenkins pipeline |
+| Geliştirme araçları | Cursor, Windsurf, GitHub Copilot |
+
+CepKontrol AI; geliştirme sürecinde Cursor, Windsurf ve GitHub Copilot araçlarından yararlanılarak bu araçlarla birlikte geliştirilmiştir.
 
 ## 📁 Proje yapısı
 
