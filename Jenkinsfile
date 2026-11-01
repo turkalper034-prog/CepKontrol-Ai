@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         MAVEN_HOME = 'C:\\Program Files\\apache-maven-3.9.16'
+        JAVA_HOME = 'C:\\Program Files\\Java\\jdk-21.0.11'
     }
 
     options {
@@ -23,7 +24,7 @@ pipeline {
                 bat '''
                     @echo off
                     if not exist test-results mkdir test-results
-                    set "PATH=%MAVEN_HOME%\\bin;%PATH%"
+                    set "PATH=%JAVA_HOME%\\bin;%MAVEN_HOME%\\bin;%PATH%"
                     set "PYTHON_EXE="
                     if defined PYTHON312 if exist "%PYTHON312%" set "PYTHON_EXE=%PYTHON312%"
                     if not defined PYTHON_EXE if exist "C:\\Users\\turka\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" set "PYTHON_EXE=C:\\Users\\turka\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
@@ -44,8 +45,17 @@ pipeline {
                     "%PYTHON_EXE%" -c "import sys; raise SystemExit(0 if sys.version_info[:2] == (3, 12) else 1)" || (echo ERROR: Jenkins selected a Python version other than 3.12: %PYTHON_EXE%& exit /b 1)
                     where node >nul 2>nul || (echo ERROR: Node.js not found on PATH.& exit /b 1)
                     where npm >nul 2>nul || (echo ERROR: npm not found on PATH.& exit /b 1)
+                    if not exist "%JAVA_HOME%\\bin\\java.exe" (echo ERROR: JDK not found at %JAVA_HOME%\\bin\\java.exe.& exit /b 1)
                     if not exist "%MAVEN_HOME%\\bin\\mvn.cmd" (echo ERROR: Maven not found at %MAVEN_HOME%\\bin\\mvn.cmd.& exit /b 1)
-                    call "%MAVEN_HOME%\\bin\\mvn.cmd" -version | findstr /C:"Java version: 21." >nul || (echo ERROR: Maven must run with JDK 21.& exit /b 1)
+                    "%JAVA_HOME%\\bin\\java.exe" -XshowSettings:properties -version 2>java-version.txt
+                    if errorlevel 1 (type java-version.txt& del java-version.txt& exit /b 1)
+                    findstr /C:"java.specification.version = 21" java-version.txt >nul || (type java-version.txt& del java-version.txt& echo ERROR: JAVA_HOME does not point to JDK 21.& exit /b 1)
+                    del java-version.txt
+                    call "%MAVEN_HOME%\\bin\\mvn.cmd" -version >maven-version.txt 2>&1
+                    if errorlevel 1 (type maven-version.txt& del maven-version.txt& exit /b 1)
+                    type maven-version.txt
+                    findstr /C:"Java version: 21." maven-version.txt >nul || (echo ERROR: Maven is not running with Java 21.& del maven-version.txt& exit /b 1)
+                    del maven-version.txt
                     where newman >nul 2>nul || (echo ERROR: Newman is not installed on the Jenkins agent. Install Newman 6.x and add it to PATH.& exit /b 1)
                     if not exist "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" (
                         echo ERROR: Google Chrome is required at the Selenium fixture's configured path.
@@ -101,7 +111,7 @@ pipeline {
             steps {
                 bat '''
                     @echo off
-                    set "PATH=%MAVEN_HOME%\\bin;%PATH%"
+                    set "PATH=%JAVA_HOME%\\bin;%MAVEN_HOME%\\bin;%PATH%"
                     if not exist test-results mkdir test-results
                     powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\\Run-Cucumber.ps1
                 '''
